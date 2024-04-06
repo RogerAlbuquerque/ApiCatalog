@@ -1,10 +1,17 @@
-﻿namespace ApiCatalog.Models;
+﻿using System.Collections.ObjectModel;
+
+namespace ApiCatalog.Models;
 
 public class Category
 {
+    public Category()
+    {
+        Products = [];
+    }
     public int CategoryId { get; set; }
     public string? Name { get; set; }
     public string? ImageUrl { get; set; }
 
+    public ICollection<Product>? Products { get; set; }
 
 }
