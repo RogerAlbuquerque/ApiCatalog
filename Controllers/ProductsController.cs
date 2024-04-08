@@ -22,4 +22,15 @@ public class ProductController(AppDbContext context) : ControllerBase
         return products;
     }
 
+    [HttpGet("{id:int}")]
+    public ActionResult<Product> GetById(int id)
+    {
+        var products = _context.Products.FirstOrDefault(p => p.ProductId == id);
+        if (products is null)
+        {
+            return NotFound("Products not found");
+        }
+        return products;
+    }
+
 }
