@@ -73,5 +73,6 @@ public class ProductController(AppDbContext context) : ControllerBase
         _context.SaveChanges();
         return Ok(product);
 
+
     }
 }
