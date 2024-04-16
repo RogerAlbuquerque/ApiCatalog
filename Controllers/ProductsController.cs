@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ApiCatalog.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace ApiCatalog.Controllers;
 
@@ -35,7 +36,7 @@ public class ProductController(AppDbContext context) : ControllerBase
     }
 
     [HttpGet("{id:int:min(1)}", Name = "GetProduct")]
-    public async Task<ActionResult<Product>> GetById(int id)
+    public async Task<ActionResult<Product>> GetById([BindRequired] int id)
     {
         var products = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == id);
         if (products is null)
