@@ -23,10 +23,21 @@ public class ProductController(AppDbContext context) : ControllerBase
         return products;
     }
 
-    [HttpGet("{id:int}", Name = "GetProduct")]
-    public ActionResult<Product> GetById(int id)
+    [HttpGet("first", Name ="FirstProduct")]
+    public async Task<ActionResult<IEnumerable<Product>>> GetFirst()
     {
-        var products = _context.Products.FirstOrDefault(p => p.ProductId == id);
+        var products = await _context.Products.AsNoTracking().ToListAsync();
+        if (products is null)
+        {
+            return NotFound("Products not found");
+        }
+        return products;
+    }
+
+    [HttpGet("{id:int:min(1)}", Name = "GetProduct")]
+    public async Task<ActionResult<Product>> GetById(int id)
+    {
+        var products = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == id);
         if (products is null)
         {
             return NotFound("Products not found");
