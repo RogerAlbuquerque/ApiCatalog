@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ApiCatalog.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using ApiCatalog.Services;
 
 namespace ApiCatalog.Controllers;
 
@@ -12,6 +13,22 @@ namespace ApiCatalog.Controllers;
 public class ProductController(AppDbContext context) : ControllerBase
 {
     public readonly AppDbContext _context = context;
+
+
+    // HOW IT WAS USED 'FROMSERVICES' BEFORE .NET 7
+    //[HttpGet("fromservice/{name}")]
+    //public ActionResult<string> GetGreetingsFromServices([FromServices] IMyService myservice, string name)
+    //{
+    //    return myservice.Greeting(name);
+    //}
+
+
+    // AFTER .NET7
+    [HttpGet("fromservice/{name}")]
+    public ActionResult<string> GetGreetingsFromServices(IMyService myservice, string name)
+    {
+        return myservice.Greeting(name);
+    }
 
     [HttpGet]
     public ActionResult<IEnumerable<Product>> Get()
