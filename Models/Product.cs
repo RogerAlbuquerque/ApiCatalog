@@ -1,16 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ApiCatalog.Validations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ApiCatalog.Models;
 
 [Table("Products")]
-public class Product
+public class Product: IValidatableObject
 {
     [Key]
     public int ProductId { get; set; }
 
     [Required]
     [StringLength(20, ErrorMessage = "The name has to be maximum 20 letters")]
+    [FirstLetterUpper]
     public string? Name { get; set; }
 
     [Required]
@@ -32,4 +34,29 @@ public class Product
     public int CategoryId { get; set; }
 
     public Category? Categories { get; set; }
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (string.IsNullOrEmpty(this.Name))
+        {
+            var primeiraLetra = this.Name[0].ToString();
+            if (primeiraLetra != primeiraLetra.ToUpper())
+            {
+                yield return new ValidationResult("First letter the name of product has to be uppercase",
+                    new[]
+                    {
+                    nameof(this.Name)
+                    });
+            }
+        }
+
+        if (this.Stock <= 0)
+        {
+            yield return new ValidationResult("Stock has to be bigger than 0",
+                new[]
+                {
+                    nameof(this.Stock)
+                });
+        }
+    }
 }
