@@ -1,5 +1,6 @@
 using ApiCatalog.Context;
 using ApiCatalog.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
@@ -16,6 +17,15 @@ string? mySqlConnection = builder.Configuration.GetConnectionString("DefaultConn
 builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(mySqlConnection, ServerVersion.AutoDetect(mySqlConnection)));
 
 builder.Services.AddTransient<IMyService, MyService>();
+
+
+//Used to disable FromService parameters on actions
+//
+//builder.Services.Configure<ApiBehaviorOptions>(options =>
+//    {
+//        options.DisableImplicitFromServicesParameters = true;
+//    }
+//);
 
 var app = builder.Build();
 
