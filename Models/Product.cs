@@ -13,11 +13,11 @@ public class Product: IValidatableObject
     [Required]
     [StringLength(20, ErrorMessage = "The name has to be maximum 20 letters")]
     [FirstLetterUpper]
-    public string? Name { get; set; }
+    public string Name { get; set; }
 
     [Required]
     [StringLength(300, ErrorMessage = "The description has to be maximum {1} characters")]
-    public string? Description { get; set; }
+    public string Description { get; set; }
 
     [Required]
     [Range(1,10000, ErrorMessage ="Has to be bettwen {1} and {2}")]
@@ -25,7 +25,7 @@ public class Product: IValidatableObject
 
     [Required]
     [StringLength(200)]
-    public string? ImageUrl { get; set; }
+    public string ImageUrl { get; set; }
 
     public float Stock { get; set; }
 
@@ -33,14 +33,15 @@ public class Product: IValidatableObject
 
     public int CategoryId { get; set; }
 
-    public Category? Categories { get; set; }
+    public Category Categories { get; set; }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        if (string.IsNullOrEmpty(this.Name))
+
+        if (!string.IsNullOrEmpty(this.Name))
         {
-            var primeiraLetra = this.Name[0].ToString();
-            if (primeiraLetra != primeiraLetra.ToUpper())
+            var firsLetter = this.Name[0].ToString();
+            if (firsLetter != firsLetter.ToUpper())
             {
                 yield return new ValidationResult("First letter the name of product has to be uppercase",
                     new[]

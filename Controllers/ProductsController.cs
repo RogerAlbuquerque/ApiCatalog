@@ -10,9 +10,23 @@ namespace ApiCatalog.Controllers;
 //[Route("[controller]/{action}")]
 [Route("[controller]")]
 [ApiController]
-public class ProductController(AppDbContext context) : ControllerBase
+public class ProductController(AppDbContext context, IConfiguration configuration) : ControllerBase
 {
-    public readonly AppDbContext _context = context;
+    private readonly AppDbContext _context = context;
+    private readonly IConfiguration _configurations = configuration;
+
+
+
+    [HttpGet("ReadConfigFile")]
+    public string GetValues()
+    {
+        var Value1 = _configurations["key1"];
+
+        //if (string.IsNullOrEmpty(Value1))
+        //    throw new Exception("Null Value");
+
+        return Value1;
+    }
 
 
     // HOW IT WAS USED 'FROMSERVICES' BEFORE .NET 7

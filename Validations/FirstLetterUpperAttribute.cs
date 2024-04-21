@@ -11,10 +11,21 @@ public class FirstLetterUpperAttribute : ValidationAttribute
             return ValidationResult.Success;
         }
 
-        var firstLetter = value.ToString()[0].ToString();
-        if (firstLetter != firstLetter.ToUpper())
+        //var firstLetter = value.ToString()[0].ToString();
+        //if (firstLetter != firstLetter.ToUpper())
+        //{
+        //    return new ValidationResult("First letter the name of product has to be uppercase");
+        //}
+
+        // This is the same code above but in a way that resolves the nullability error.
+        var stringValue = value.ToString();
+        if (!string.IsNullOrEmpty(stringValue))
         {
-            return new ValidationResult("First letter the name of product has to be uppercase");
+            var firstLetter = stringValue[0].ToString();
+            if (firstLetter != firstLetter.ToUpper())
+            {
+                return new ValidationResult("First letter the name of product has to be uppercase");
+            }
         }
 
         return ValidationResult.Success;
