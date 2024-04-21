@@ -1,4 +1,5 @@
 using ApiCatalog.Context;
+using ApiCatalog.Extensions;
 using ApiCatalog.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -35,6 +36,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.ConfigureExceptionsHandler();
 }
 
 app.UseHttpsRedirection();
