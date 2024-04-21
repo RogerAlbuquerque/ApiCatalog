@@ -1,4 +1,5 @@
 ﻿using ApiCatalog.Context;
+using ApiCatalog.Filters;
 using ApiCatalog.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,8 @@ public class CategoriesController(AppDbContext context) : ControllerBase
     public readonly AppDbContext _context = context;
 
     [HttpGet]
+    [ServiceFilter(typeof(ApiLoggingFilter))]
+
     public ActionResult<IEnumerable<Category>> Get()
     {
         return _context.Categories.ToList();
