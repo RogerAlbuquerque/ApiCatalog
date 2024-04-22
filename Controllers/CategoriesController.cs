@@ -8,9 +8,10 @@ namespace ApiCatalog.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class CategoriesController(AppDbContext context) : ControllerBase
+public class CategoriesController(AppDbContext context, ILogger<CategoriesController> logger) : ControllerBase
 {
-    public readonly AppDbContext _context = context;
+    private readonly AppDbContext _context = context;
+    public readonly ILogger<CategoriesController> _logger = logger;
 
     [HttpGet]
     [ServiceFilter(typeof(ApiLoggingFilter))]
