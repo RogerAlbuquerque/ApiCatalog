@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 namespace ApiCatalog.Models;
@@ -13,6 +12,7 @@ public class Category
     }
 
     [Key]
+    [JsonIgnore]
     public int CategoryId { get; set; }
 
     [Required]

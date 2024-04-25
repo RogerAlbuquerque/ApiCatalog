@@ -1,6 +1,6 @@
 ﻿using ApiCatalog.Models;
 
-namespace ApiCatalog.Repositores
+namespace ApiCatalog.Repositories
 {
     public interface ICategoryRepository    // Since the interface is public, all its members are implicitly public as well.
     {
