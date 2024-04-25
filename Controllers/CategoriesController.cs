@@ -3,14 +3,15 @@ using ApiCatalog.Filters;
 using ApiCatalog.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ApiCatalog.Repositores;
 
 namespace ApiCatalog.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class CategoriesController(AppDbContext context, ILogger<CategoriesController> logger) : ControllerBase
+public class CategoriesController(ICategoryRepository repository, ILogger<CategoriesController> logger) : ControllerBase
 {
-    private readonly AppDbContext _context = context;
+    private readonly ICategoryRepository _repository = repository;
     public readonly ILogger<CategoriesController> _logger = logger;
 
     [HttpGet]
@@ -18,26 +19,23 @@ public class CategoriesController(AppDbContext context, ILogger<CategoriesContro
 
     public ActionResult<IEnumerable<Category>> Get()
     {
-        return _context.Categories.ToList();
+        var categories = _repository.GetCategories();
+
+        return Ok(categories);
     }
 
-    [HttpGet("products")]
-    public ActionResult<IEnumerable<Category>> GetCategoryWProduct()
-    { 
-        return _context.Categories.Include(p => p.Products).ToList();
-    }
-
+   
     [HttpGet("{id:int}", Name = "GetCategory")]
     public ActionResult<Category> Get(int id)
     {
-        var category = _context.Categories.FirstOrDefault(p => p.CategoryId == id);
+        var category = _repository.GetCategoryById(id);
 
         if (category == null)
         {
             return NotFound("Category not found");
         }
 
-        return Ok();
+        return Ok(category);
     }
 
     [HttpPost]
@@ -45,8 +43,7 @@ public class CategoriesController(AppDbContext context, ILogger<CategoriesContro
     {
         if (category == null) return BadRequest();
 
-        _context.Categories.Add(category);
-        _context.SaveChanges();
+        _repository.CreateCategory(category);
 
         return new CreatedAtRouteResult("GetCategory", new { id = category.CategoryId }, category);
     }
@@ -57,19 +54,17 @@ public class CategoriesController(AppDbContext context, ILogger<CategoriesContro
     {
         if (id != category.CategoryId) return BadRequest();
 
-        _context.Entry(category).State = EntityState.Modified;
-        _context.SaveChanges();
+        _repository.UpdateCategory(category);
 
-        return Ok();
+        return Ok(category);
     }
 
     [HttpDelete("{id:int}")]
     public ActionResult<Category> Delete(int id)
     {
-        var category = _context.Categories.FirstOrDefault(p => p.CategoryId == id);
+        var category = _repository.GetCategoryById(id);
         if (category == null) return NotFound("Category Not Found");
-        _context.Categories.Remove(category);
-        _context.SaveChanges();
+        _repository.DeleteCategory(id);
         return Ok(category);
     }
 }
