@@ -1,7 +1,7 @@
 using ApiCatalog.Context;
 using ApiCatalog.Extensions;
 using ApiCatalog.Filters;
-using ApiCatalog.Repositores;
+using ApiCatalog.Repositories;
 using ApiCatalog.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +22,7 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(mySqlCon
 var KeyOfAppSetting = builder.Configuration["key1"];
 builder.Services.AddTransient<IMyService, MyService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 builder.Services.AddScoped<ApiLoggingFilter>();
 //Used to disable FromService parameters on actions
