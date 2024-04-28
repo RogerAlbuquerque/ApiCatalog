@@ -4,15 +4,16 @@ using ApiCatalog.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ApiCatalog.Services;
+using ApiCatalog.Repositories;
 
 namespace ApiCatalog.Controllers;
 
 //[Route("[controller]/{action}")]
 [Route("[controller]")]
 [ApiController]
-public class ProductController(AppDbContext context, IConfiguration configuration) : ControllerBase
+public class ProductController(IProductRepository repository, IConfiguration configuration) : ControllerBase
 {
-    private readonly AppDbContext _context = context;
+    private readonly IProductRepository _repository = repository;
     private readonly IConfiguration _configurations = configuration;
 
 
@@ -47,7 +48,7 @@ public class ProductController(AppDbContext context, IConfiguration configuratio
     [HttpGet]
     public ActionResult<IEnumerable<Product>> Get()
     {
-        var products = _context.Products.ToList();
+        var products = _repository.GetProducts().ToList();
         if (products is null)
         {
             return NotFound("Products not found");
@@ -58,7 +59,7 @@ public class ProductController(AppDbContext context, IConfiguration configuratio
     [HttpGet("first", Name ="FirstProduct")]
     public async Task<ActionResult<IEnumerable<Product>>> GetFirst()
     {
-        var products = await _context.Products.AsNoTracking().ToListAsync();
+        var products = await _repository.GetProducts().AsNoTracking().ToListAsync();
         if (products is null)
         {
             return NotFound("Products not found");
@@ -69,7 +70,7 @@ public class ProductController(AppDbContext context, IConfiguration configuratio
     [HttpGet("{id:int:min(1)}", Name = "GetProduct")]
     public async Task<ActionResult<Product>> GetById([BindRequired] int id)
     {
-        var products = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == id);
+        var products = await _repository.GetProducts().FirstOrDefaultAsync(p => p.ProductId == id);
         if (products is null)
         {
             return NotFound("Products not found");
@@ -84,8 +85,7 @@ public class ProductController(AppDbContext context, IConfiguration configuratio
         {
             return BadRequest("Product not found");
         }
-        _context.Products?.Add(product);
-        _context.SaveChanges();
+        _repository.CreatProduct(product);
         return new CreatedAtRouteResult("GetProduct", new { id = product.ProductId }, product);
 
     }
@@ -97,8 +97,7 @@ public class ProductController(AppDbContext context, IConfiguration configuratio
         {
             return BadRequest();
         }
-        _context.Entry(product).State =  EntityState.Modified;
-        _context.SaveChanges();
+        _repository.UpdateProduct(product);
 
         return NoContent();
     }
@@ -106,14 +105,7 @@ public class ProductController(AppDbContext context, IConfiguration configuratio
     [HttpDelete("{id:int}")]
     public ActionResult Delete(int id) 
     {
-        var product = _context.Products.FirstOrDefault(p =>p.ProductId == id);
-        if (product is null)
-        {
-            return NotFound("Produto não encontrado");
-        }
-
-        _context.Products.Remove(product);
-        _context.SaveChanges();
+        var product = _repository.DeleteProduct(id);
         return Ok(product);
 
 
