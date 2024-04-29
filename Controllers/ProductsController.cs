@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ApiCatalog.Services;
 using ApiCatalog.Repositories;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace ApiCatalog.Controllers;
 
@@ -97,16 +98,22 @@ public class ProductController(IProductRepository repository, IConfiguration con
         {
             return BadRequest();
         }
-        _repository.UpdateProduct(product);
+        bool updated = _repository.UpdateProduct(product);
 
-        return NoContent();
+        if (updated)
+            return Ok(product);
+        else
+            return StatusCode(500, $"Error to update product with id = {id}");
     }
 
     [HttpDelete("{id:int}")]
     public ActionResult Delete(int id) 
     {
-        var product = _repository.DeleteProduct(id);
-        return Ok(product);
+        bool product = _repository.DeleteProduct(id);
+        if (product)
+            return Ok($"Product with id = {id} was excluded");
+        else
+            return StatusCode(500, $"Error to delete product with id = {id}");
 
 
     }
