@@ -2,8 +2,7 @@
 using ApiCatalog.Filters;
 using ApiCatalog.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ApiCatalog.Repositores;
+using ApiCatalog.Repositories;
 
 namespace ApiCatalog.Controllers;
 
