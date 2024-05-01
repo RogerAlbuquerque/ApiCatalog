@@ -4,8 +4,8 @@ using ApiCatalog.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ApiCatalog.Services;
-using ApiCatalog.Repositories;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using ApiCatalog.Repositories.Interfaces;
 
 namespace ApiCatalog.Controllers;
 

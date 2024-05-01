@@ -1,5 +1,6 @@
 ﻿using ApiCatalog.Context;
 using ApiCatalog.Models;
+using ApiCatalog.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApiCatalog.Repositories;

@@ -2,6 +2,7 @@ using ApiCatalog.Context;
 using ApiCatalog.Extensions;
 using ApiCatalog.Filters;
 using ApiCatalog.Repositories;
+using ApiCatalog.Repositories.Interfaces;
 using ApiCatalog.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

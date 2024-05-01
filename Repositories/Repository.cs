@@ -1,4 +1,5 @@
 ﻿using ApiCatalog.Context;
+using ApiCatalog.Repositories.Interfaces;
 using System.Linq.Expressions;
 
 namespace ApiCatalog.Repositories
