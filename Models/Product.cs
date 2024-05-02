@@ -41,23 +41,18 @@ public class Product: IValidatableObject
         if (!string.IsNullOrEmpty(this.Name))
         {
             var firsLetter = this.Name[0].ToString();
-            if (firsLetter != firsLetter.ToUpper())
+            //if (firsLetter != firsLetter.ToUpper()
+            if (!firsLetter.Equals(firsLetter, StringComparison.CurrentCultureIgnoreCase))
             {
                 yield return new ValidationResult("First letter the name of product has to be uppercase",
-                    new[]
-                    {
-                    nameof(this.Name)
-                    });
+                    //new[]{ nameof(this.Name) });
+                    [nameof(this.Name)]);
             }
         }
 
         if (this.Stock <= 0)
         {
-            yield return new ValidationResult("Stock has to be bigger than 0",
-                new[]
-                {
-                    nameof(this.Stock)
-                });
+            yield return new ValidationResult("Stock has to be bigger than 0",[nameof(this.Stock)]);    // The same code as up
         }
     }
 }
