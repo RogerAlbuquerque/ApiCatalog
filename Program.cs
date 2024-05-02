@@ -24,6 +24,7 @@ var KeyOfAppSetting = builder.Configuration["key1"];
 builder.Services.AddTransient<IMyService, MyService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 builder.Services.AddScoped<ApiLoggingFilter>();
 //Used to disable FromService parameters on actions

@@ -2,13 +2,9 @@
 
 namespace ApiCatalog.Repositories.Interfaces
 {
-    public interface ICategoryRepository    // Since the interface is public, all its members are implicitly public as well.
+    public interface ICategoryRepository :IRepository<Category>    // Since the interface is public, all its members are implicitly public as well.
     {
-        IEnumerable<Category> GetCategories();
-        Category GetCategoryById(int id);
-        Category CreateCategory(Category category);
-        Category UpdateCategory(Category category);
-        Category DeleteCategory(int id);
+    
     }
 
 }

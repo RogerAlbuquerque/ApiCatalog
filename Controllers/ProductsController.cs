@@ -12,9 +12,9 @@ namespace ApiCatalog.Controllers;
 //[Route("[controller]/{action}")]
 [Route("[controller]")]
 [ApiController]
-public class ProductController(IProductRepository repository, IConfiguration configuration) : ControllerBase
+public class ProductController(IProductRepository productRepository ,IConfiguration configuration) : ControllerBase
 {
-    private readonly IProductRepository _repository = repository;
+    private readonly IProductRepository _produtoRepository = productRepository;
     private readonly IConfiguration _configurations = configuration;
 
 
@@ -30,6 +30,15 @@ public class ProductController(IProductRepository repository, IConfiguration con
         return Value1;
     }
 
+    [HttpGet("products/{id}")]
+    public ActionResult<IEnumerable<Product>> GetProductsByCategory(int id)
+    { 
+        var products = _produtoRepository.GetProductsByCategory(id);
+        if (products == null)
+            return NotFound();
+
+        return Ok(products);
+    }
 
     // HOW IT WAS USED 'FROMSERVICES' BEFORE .NET 7
     //[HttpGet("fromservice/{name}")]
@@ -49,34 +58,34 @@ public class ProductController(IProductRepository repository, IConfiguration con
     [HttpGet]
     public ActionResult<IEnumerable<Product>> Get()
     {
-        var products = _repository.GetProducts().ToList();
+        var products = _produtoRepository.GetAll();
         if (products is null)
         {
             return NotFound("Products not found");
         }
-        return products;
+        return Ok(products);
     }
 
-    [HttpGet("first", Name ="FirstProduct")]
-    public async Task<ActionResult<IEnumerable<Product>>> GetFirst()
-    {
-        var products = await _repository.GetProducts().AsNoTracking().ToListAsync();
-        if (products is null)
-        {
-            return NotFound("Products not found");
-        }
-        return products;
-    }
+    //[HttpGet("first", Name ="FirstProduct")]
+    //public async Task<ActionResult<IEnumerable<Product>>> GetFirst()
+    //{
+    //    var products = await _repository.GetProducts().AsNoTracking().ToListAsync();
+    //    if (products is null)
+    //    {
+    //        return NotFound("Products not found");
+    //    }
+    //    return products;
+    //}
 
     [HttpGet("{id:int:min(1)}", Name = "GetProduct")]
-    public async Task<ActionResult<Product>> GetById([BindRequired] int id)
+    public ActionResult<Product> GetProductById([BindRequired] int id)
     {
-        var products = await _repository.GetProducts().FirstOrDefaultAsync(p => p.ProductId == id);
-        if (products is null)
+        var product = _produtoRepository.GetById(p => p.ProductId == id);
+        if (product is null)
         {
             return NotFound("Products not found");
         }
-        return products;
+        return Ok(product);
     }
 
     [HttpPost]
@@ -86,7 +95,7 @@ public class ProductController(IProductRepository repository, IConfiguration con
         {
             return BadRequest("Product not found");
         }
-        _repository.CreatProduct(product);
+        _produtoRepository.Create(product);
         return new CreatedAtRouteResult("GetProduct", new { id = product.ProductId }, product);
 
     }
@@ -98,22 +107,20 @@ public class ProductController(IProductRepository repository, IConfiguration con
         {
             return BadRequest();
         }
-        bool updated = _repository.UpdateProduct(product);
+        var ProductUpdated = _produtoRepository.Update(product);
 
-        if (updated)
-            return Ok(product);
-        else
-            return StatusCode(500, $"Error to update product with id = {id}");
+            return Ok(ProductUpdated);
     }
 
     [HttpDelete("{id:int}")]
     public ActionResult Delete(int id) 
     {
-        bool product = _repository.DeleteProduct(id);
-        if (product)
-            return Ok($"Product with id = {id} was excluded");
-        else
-            return StatusCode(500, $"Error to delete product with id = {id}");
+        var product = _produtoRepository.GetById(c => c.ProductId == id);
+        if (product == null) return NotFound("Category Not Found");
+
+        _produtoRepository.Delete(product);
+        return Ok(product);
+
 
 
     }

@@ -8,9 +8,9 @@ namespace ApiCatalog.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class CategoriesController(ICategoryRepository repository, ILogger<CategoriesController> logger) : ControllerBase
+public class CategoriesController(IRepository<Category> repository, ILogger<CategoriesController> logger) : ControllerBase
 {
-    private readonly ICategoryRepository _repository = repository;
+    private readonly IRepository<Category> _repository = repository;
     public readonly ILogger<CategoriesController> _logger = logger;
 
     [HttpGet]
@@ -18,7 +18,7 @@ public class CategoriesController(ICategoryRepository repository, ILogger<Catego
 
     public ActionResult<IEnumerable<Category>> Get()
     {
-        var categories = _repository.GetCategories();
+        var categories = _repository.GetAll();
 
         return Ok(categories);
     }
@@ -27,7 +27,7 @@ public class CategoriesController(ICategoryRepository repository, ILogger<Catego
     [HttpGet("{id:int}", Name = "GetCategory")]
     public ActionResult<Category> Get(int id)
     {
-        var category = _repository.GetCategoryById(id);
+        var category = _repository.GetById(c => c.CategoryId == id);
 
         if (category == null)
         {
@@ -42,7 +42,7 @@ public class CategoriesController(ICategoryRepository repository, ILogger<Catego
     {
         if (category == null) return BadRequest();
 
-        _repository.CreateCategory(category);
+        _repository.Create(category);
 
         return new CreatedAtRouteResult("GetCategory", new { id = category.CategoryId }, category);
     }
@@ -53,7 +53,7 @@ public class CategoriesController(ICategoryRepository repository, ILogger<Catego
     {
         if (id != category.CategoryId) return BadRequest();
 
-        _repository.UpdateCategory(category);
+        _repository.Update(category);
 
         return Ok(category);
     }
@@ -61,9 +61,9 @@ public class CategoriesController(ICategoryRepository repository, ILogger<Catego
     [HttpDelete("{id:int}")]
     public ActionResult<Category> Delete(int id)
     {
-        var category = _repository.GetCategoryById(id);
+        var category = _repository.GetById(c => c.CategoryId == id);
         if (category == null) return NotFound("Category Not Found");
-        _repository.DeleteCategory(id);
+        _repository.Delete(category);
         return Ok(category);
     }
 }
