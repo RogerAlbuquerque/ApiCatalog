@@ -9,10 +9,10 @@ namespace ApiCatalog.Repositories
         protected readonly AppDbContext _context = context;
         public IEnumerable<T> GetAll()
         {
-            return _context.Set<T>();
-            //return [.. _context.Set<T>()]; 
-            //Ao utilizar o spread operator, você está dizendo explicitamente que deseja expandir todos os elementos do conjunto
-            //retornado por _context.Set<T>() em um novo IEnumerable<T>, evitando a criação intermediária de uma lista.
+            //return _context.Set<T>().ToList();
+            return [.. _context.Set<T>()];
+                                                            //Ao utilizar o spread operator, você está dizendo explicitamente que deseja expandir todos os elementos do conjunto
+                                                            //retornado por _context.Set<T>() em um novo IEnumerable<T>, evitando a criação intermediária de uma lista.
         }
 
         public T GetById(Expression<Func<T, bool>> predicate)
