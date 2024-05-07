@@ -12,9 +12,9 @@ namespace ApiCatalog.Controllers;
 //[Route("[controller]/{action}")]
 [Route("[controller]")]
 [ApiController]
-public class ProductController(IProductRepository productRepository ,IConfiguration configuration) : ControllerBase
+public class ProductController(IUnitOfWork uof , IConfiguration configuration) : ControllerBase
 {
-    private readonly IProductRepository _productRepository = productRepository;
+    private readonly IUnitOfWork _uof = uof;
     private readonly IConfiguration _configurations = configuration;
 
 
@@ -33,7 +33,7 @@ public class ProductController(IProductRepository productRepository ,IConfigurat
     [HttpGet("products/{id}")]
     public ActionResult<IEnumerable<Product>> GetProductsByCategory(int id)
     { 
-        var products = _productRepository.GetProductsByCategory(id);
+        var products = _uof.ProductRepository.GetProductsByCategory(id);
         if (products == null)
             return NotFound();
 
@@ -58,7 +58,7 @@ public class ProductController(IProductRepository productRepository ,IConfigurat
     [HttpGet]
     public ActionResult<IEnumerable<Product>> Get()
     {
-        var products = _productRepository.GetAll();
+        var products = _uof.ProductRepository.GetAll();
         if (products is null)
         {
             return NotFound("Products not found");
@@ -80,7 +80,7 @@ public class ProductController(IProductRepository productRepository ,IConfigurat
     [HttpGet("{id:int:min(1)}", Name = "GetProduct")]
     public ActionResult<Product> GetProductById([BindRequired] int id)
     {
-        var product = _productRepository.GetById(p => p.ProductId == id);
+        var product = _uof.ProductRepository.GetById(p => p.ProductId == id);
         if (product is null)
         {
             return NotFound("Products not found");
@@ -95,7 +95,8 @@ public class ProductController(IProductRepository productRepository ,IConfigurat
         {
             return BadRequest("Product not found");
         }
-        _productRepository.Create(product);
+        _uof.ProductRepository.Create(product);
+        _uof.Commit();
         return new CreatedAtRouteResult("GetProduct", new { id = product.ProductId }, product);
 
     }
@@ -107,18 +108,20 @@ public class ProductController(IProductRepository productRepository ,IConfigurat
         {
             return BadRequest();
         }
-        var ProductUpdated = _productRepository.Update(product);
+        var ProductUpdated = _uof.ProductRepository.Update(product);
+        _uof.Commit();
 
-            return Ok(ProductUpdated);
+        return Ok(ProductUpdated);
     }
 
     [HttpDelete("{id:int}")]
     public ActionResult Delete(int id) 
     {
-        var product = _productRepository.GetById(c => c.ProductId == id);
+        var product = _uof.ProductRepository.GetById(c => c.ProductId == id);
         if (product == null) return NotFound("Category Not Found");
 
-        _productRepository.Delete(product);
+        _uof.ProductRepository.Delete(product);
+        _uof.Commit();
         return Ok(product);
 
 

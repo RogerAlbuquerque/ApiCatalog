@@ -8,9 +8,9 @@ namespace ApiCatalog.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class CategoriesController(IRepository<Category> repository, ILogger<CategoriesController> logger) : ControllerBase
+public class CategoriesController(IUnitOfWork uof, ILogger<CategoriesController> logger) : ControllerBase
 {
-    private readonly IRepository<Category> _repository = repository;
+    private readonly IUnitOfWork _uof = uof;
     public readonly ILogger<CategoriesController> _logger = logger;
 
     [HttpGet]
@@ -18,7 +18,7 @@ public class CategoriesController(IRepository<Category> repository, ILogger<Cate
 
     public ActionResult<IEnumerable<Category>> Get()
     {
-        var categories = _repository.GetAll();
+        var categories = _uof.CategoryRepository.GetAll();
 
         return Ok(categories);
     }
@@ -27,7 +27,7 @@ public class CategoriesController(IRepository<Category> repository, ILogger<Cate
     [HttpGet("{id:int}", Name = "GetCategory")]
     public ActionResult<Category> Get(int id)
     {
-        var category = _repository.GetById(c => c.CategoryId == id);
+        var category = _uof.CategoryRepository.GetById(c => c.CategoryId == id);
 
         if (category == null)
         {
@@ -42,7 +42,8 @@ public class CategoriesController(IRepository<Category> repository, ILogger<Cate
     {
         if (category == null) return BadRequest();
 
-        _repository.Create(category);
+        _uof.CategoryRepository.Create(category);
+        _uof.Commit();
 
         return new CreatedAtRouteResult("GetCategory", new { id = category.CategoryId }, category);
     }
@@ -53,7 +54,8 @@ public class CategoriesController(IRepository<Category> repository, ILogger<Cate
     {
         if (id != category.CategoryId) return BadRequest();
 
-        _repository.Update(category);
+        _uof.CategoryRepository.Update(category);
+        _uof.Commit();
 
         return Ok(category);
     }
@@ -61,9 +63,10 @@ public class CategoriesController(IRepository<Category> repository, ILogger<Cate
     [HttpDelete("{id:int}")]
     public ActionResult<Category> Delete(int id)
     {
-        var category = _repository.GetById(c => c.CategoryId == id);
+        var category = _uof.CategoryRepository.GetById(c => c.CategoryId == id);
         if (category == null) return NotFound("Category Not Found");
-        _repository.Delete(category);
+        _uof.CategoryRepository.Delete(category);
+        _uof.Commit();
         return Ok(category);
     }
 }

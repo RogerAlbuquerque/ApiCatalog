@@ -1,5 +1,6 @@
 ﻿using ApiCatalog.Context;
 using ApiCatalog.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace ApiCatalog.Repositories
@@ -9,8 +10,9 @@ namespace ApiCatalog.Repositories
         protected readonly AppDbContext _context = context;
         public IEnumerable<T> GetAll()
         {
+
             //return _context.Set<T>().ToList();
-            return [.. _context.Set<T>()];
+            return [.. _context.Set<T>().AsNoTracking()];
                                                             //Ao utilizar o spread operator, você está dizendo explicitamente que deseja expandir todos os elementos do conjunto
                                                             //retornado por _context.Set<T>() em um novo IEnumerable<T>, evitando a criação intermediária de uma lista.
         }
@@ -23,21 +25,21 @@ namespace ApiCatalog.Repositories
         public T Create(T entity)
         {
             _context.Set<T>().Add(entity);
-            _context.SaveChanges();
+            //_context.SaveChanges();
             return entity;
         }
         public T Update(T entity)
         {
             // _context.Entry(entity).State = EntityState.Modified; // A de baixo faz a mesma coisa que essa, com algumas diferenças. Esse cria uma query para um único campo, o outro é mais para atualizar tudo.
             _context.Set<T>().Update(entity);
-            _context.SaveChanges();
+            //_context.SaveChanges();
             return entity;
         }
 
         public T Delete(T entity)
         {
             _context.Set<T>().Remove(entity);
-            _context.SaveChanges();
+            //_context.SaveChanges();
             return entity;
         }
 
