@@ -13,7 +13,8 @@ namespace ApiCatalog.Repositories
         { 
             get
             {
-                return _productRepo = _productRepo ?? new ProductRepository(_context);
+                //return _productRepo = _productRepo ?? new ProductRepository(_context);    // Not using compound assignment but is the same code
+                return _productRepo ??= new ProductRepository(_context);
                 
                 //#### The same code ####
                 //if(_productRepo == null)
@@ -28,7 +29,7 @@ namespace ApiCatalog.Repositories
         {
             get
             {
-                return _categorytRepo = _categorytRepo ?? new CategoryRepository(_context);
+                return _categorytRepo ??= new CategoryRepository(_context);
             }
         }
         public void Commit()
