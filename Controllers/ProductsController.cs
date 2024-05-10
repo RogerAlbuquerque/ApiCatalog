@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ApiCatalog.Services;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using ApiCatalog.Repositories.Interfaces;
+using ApiCatalog.Pagination;
 
 namespace ApiCatalog.Controllers;
 
@@ -29,6 +30,12 @@ public class ProductController(IUnitOfWork uof , IConfiguration configuration) :
 
         return Value1;
     }
+
+    public ActionResult<IEnumerable<Product>> Get([FromQuery] ProductsParameters productsParameters)
+    {
+       return _uof.ProductRepository.GetProducts(productsParameters).ToList();
+    }
+
 
     [HttpGet("products/{id}")]
     public ActionResult<IEnumerable<Product>> GetProductsByCategory(int id)
