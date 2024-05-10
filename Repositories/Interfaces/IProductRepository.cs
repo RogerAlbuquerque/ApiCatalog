@@ -6,7 +6,7 @@ namespace ApiCatalog.Repositories.Interfaces
     // This is not the more usable way to implement repository, but, i need learn
     public interface IProductRepository:IRepository<Product>
     {
-        IEnumerable<Product> GetProducts(ProductsParameters productsParams);
-        IEnumerable<Product> GetProductsByCategory(int id);
+       PagedList<Product> GetProducts(ProductsParameters productsParams);
+       IEnumerable<Product> GetProductsByCategory(int id);
     }
 }

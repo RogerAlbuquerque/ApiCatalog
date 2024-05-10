@@ -33,7 +33,22 @@ public class ProductController(IUnitOfWork uof , IConfiguration configuration) :
 
     public ActionResult<IEnumerable<Product>> Get([FromQuery] ProductsParameters productsParameters)
     {
-       return _uof.ProductRepository.GetProducts(productsParameters).ToList();
+       var products = _uof.ProductRepository.GetProducts(productsParameters);
+
+        var metadata = new
+        {
+            products.TotalCount,
+            products.PageSize,
+            products.CurrentPage,
+            products.TotalPages,
+            products.HasNext,
+            products.HasPrevious
+
+        };
+
+        Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+
+        return Ok(products);
     }
 
 
