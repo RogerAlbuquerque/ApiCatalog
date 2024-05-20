@@ -20,6 +20,10 @@ builder.Services.AddSwaggerGen();
 string mySqlConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(mySqlConnection, ServerVersion.AutoDetect(mySqlConnection)));
 
+//JWT AUTHENTICATION
+builder.Services.AddAuthorization();
+builder.Services.AddAuthentication("Bearer").AddJwtBearer();
+
 var KeyOfAppSetting = builder.Configuration["key1"];
 builder.Services.AddTransient<IMyService, MyService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();

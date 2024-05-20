@@ -1,10 +1,8 @@
 ﻿using ApiCatalog.Context;
 using Microsoft.AspNetCore.Mvc;
 using ApiCatalog.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ApiCatalog.Services;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using ApiCatalog.Repositories.Interfaces;
 using ApiCatalog.Pagination;
 
@@ -30,26 +28,26 @@ public class ProductController(IUnitOfWork uof , IConfiguration configuration) :
 
         return Value1;
     }
+    //[HttpGet(Name = "Get1")]
+    //public ActionResult<IEnumerable<Product>> Get1([FromQuery] ProductsParameters productsParameters)
+    //{
+    //    var products = _uof.ProductRepository.GetProducts(productsParameters);
 
-    public ActionResult<IEnumerable<Product>> Get([FromQuery] ProductsParameters productsParameters)
-    {
-       var products = _uof.ProductRepository.GetProducts(productsParameters);
+    //    //var metadata = new
+    //    //{
+    //    //    products.TotalCount,
+    //    //    products.PageSize,
+    //    //    products.CurrentPage,
+    //    //    products.TotalPages,
+    //    //    products.HasNext,
+    //    //    products.HasPrevious
 
-        var metadata = new
-        {
-            products.TotalCount,
-            products.PageSize,
-            products.CurrentPage,
-            products.TotalPages,
-            products.HasNext,
-            products.HasPrevious
+    //    //};
 
-        };
+    //    //Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
 
-        Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
-
-        return Ok(products);
-    }
+    //    return Ok(products);
+    //}
 
 
     [HttpGet("products/{id}")]
@@ -77,8 +75,8 @@ public class ProductController(IUnitOfWork uof , IConfiguration configuration) :
         return myservice.Greeting(name);
     }
 
-    [HttpGet]
-    public ActionResult<IEnumerable<Product>> Get()
+    [HttpGet(Name = "Get2")]
+    public ActionResult<IEnumerable<Product>> Get2()
     {
         var products = _uof.ProductRepository.GetAll();
         if (products is null)
