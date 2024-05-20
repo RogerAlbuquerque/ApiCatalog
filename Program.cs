@@ -1,10 +1,10 @@
 using ApiCatalog.Context;
+using ApiCatalog.DTOs.Mappings;
 using ApiCatalog.Extensions;
 using ApiCatalog.Filters;
 using ApiCatalog.Repositories;
 using ApiCatalog.Repositories.Interfaces;
 using ApiCatalog.Services;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
@@ -30,6 +30,7 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddAutoMapper(typeof(ProductDTOMappingProfile));
 
 
 builder.Services.AddScoped<ApiLoggingFilter>();

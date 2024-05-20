@@ -5,16 +5,20 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ApiCatalog.Services;
 using ApiCatalog.Repositories.Interfaces;
 using ApiCatalog.Pagination;
+using ApiCatalog.DTOs;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using AutoMapper;
 
 namespace ApiCatalog.Controllers;
 
 //[Route("[controller]/{action}")]
 [Route("[controller]")]
 [ApiController]
-public class ProductController(IUnitOfWork uof , IConfiguration configuration) : ControllerBase
+public class ProductController(IUnitOfWork uof , IConfiguration configuration, IMapper mapper) : ControllerBase
 {
     private readonly IUnitOfWork _uof = uof;
     private readonly IConfiguration _configurations = configuration;
+    private readonly IMapper _mapper = mapper;
 
 
 
@@ -28,8 +32,18 @@ public class ProductController(IUnitOfWork uof , IConfiguration configuration) :
 
         return Value1;
     }
+
+
+
+
+
+
+
+
+
+
     //[HttpGet(Name = "Get1")]
-    //public ActionResult<IEnumerable<Product>> Get1([FromQuery] ProductsParameters productsParameters)
+    //public ActionResult<IEnumerable<ProductDTO>> Get1([FromQuery] ProductsParameters productsParameters)
     //{
     //    var products = _uof.ProductRepository.GetProducts(productsParameters);
 
@@ -50,15 +64,38 @@ public class ProductController(IUnitOfWork uof , IConfiguration configuration) :
     //}
 
 
+
+
+
+
+
+
+
+
+
+
     [HttpGet("products/{id}")]
-    public ActionResult<IEnumerable<Product>> GetProductsByCategory(int id)
+    public ActionResult<IEnumerable<ProductDTO>> GetProductsByCategory(int id)
     { 
         var products = _uof.ProductRepository.GetProductsByCategory(id);
         if (products == null)
             return NotFound();
 
-        return Ok(products);
+      //var destinyResu = _mapper.Map<DestinyRsult>(origin); 
+        var productsDto = _mapper.Map<IEnumerable<ProductDTO>>(products);
+
+        return Ok(productsDto);
     }
+
+
+
+
+
+
+
+
+
+
 
     // HOW IT WAS USED 'FROMSERVICES' BEFORE .NET 7
     //[HttpGet("fromservice/{name}")]
@@ -75,16 +112,36 @@ public class ProductController(IUnitOfWork uof , IConfiguration configuration) :
         return myservice.Greeting(name);
     }
 
+
+
+
+
+
+
+
+
+
     [HttpGet(Name = "Get2")]
-    public ActionResult<IEnumerable<Product>> Get2()
+    public ActionResult<IEnumerable<ProductDTO>> Get()
     {
         var products = _uof.ProductRepository.GetAll();
         if (products is null)
         {
             return NotFound("Products not found");
         }
-        return Ok(products);
+        var productsDto = _mapper.Map<IEnumerable<ProductDTO>>(products);
+        return Ok(productsDto);
     }
+
+
+
+
+
+
+
+
+
+
 
     //[HttpGet("first", Name ="FirstProduct")]
     //public async Task<ActionResult<IEnumerable<Product>>> GetFirst()
@@ -97,6 +154,14 @@ public class ProductController(IUnitOfWork uof , IConfiguration configuration) :
     //    return products;
     //}
 
+
+
+
+
+
+
+
+
     [HttpGet("{id:int:min(1)}", Name = "GetProduct")]
     public ActionResult<Product> GetProductById([BindRequired] int id)
     {
@@ -105,44 +170,85 @@ public class ProductController(IUnitOfWork uof , IConfiguration configuration) :
         {
             return NotFound("Products not found");
         }
-        return Ok(product);
+
+        var productDto = _mapper.Map<ProductDTO>(product);
+        return Ok(productDto);
     }
 
+
+
+
+
+
+
+
+
+
     [HttpPost]
-    public ActionResult Post(Product product)
+    public ActionResult<ProductDTO> Post(ProductDTO productDto)
     {
-        if (product is null)
+        if (productDto is null)
         {
             return BadRequest("Product not found");
         }
-        _uof.ProductRepository.Create(product);
+
+        var products = _mapper.Map<Product>(productDto);
+        var updatedProduct = _uof.ProductRepository.Create(products);
         _uof.Commit();
-        return new CreatedAtRouteResult("GetProduct", new { id = product.ProductId }, product);
+
+        var updatedProductDto = _mapper.Map<ProductDTO>(updatedProduct);
+        return new CreatedAtRouteResult("GetProduct", new { id = updatedProductDto.ProductId }, updatedProductDto);
 
     }
 
+
+
+
+
+
+
+
+
+
+
+
     [HttpPut("{id:int}")]
-    public ActionResult Put(int id, Product product)
+    public ActionResult<ProductDTO> Put(int id, ProductDTO productDto)
     {
-        if (id != product.ProductId)
+        if (id != productDto.ProductId)
         {
             return BadRequest();
         }
+
+        var product = _mapper.Map<Product>(productDto);
+
         var ProductUpdated = _uof.ProductRepository.Update(product);
         _uof.Commit();
 
-        return Ok(ProductUpdated);
+        var ProductUpdatedDto = _mapper.Map<ProductDTO>(ProductUpdated);
+        return Ok(ProductUpdatedDto);
     }
 
+
+
+
+
+
+
+
+
+
     [HttpDelete("{id:int}")]
-    public ActionResult Delete(int id) 
+    public ActionResult<ProductDTO> Delete(int id) 
     {
         var product = _uof.ProductRepository.GetById(c => c.ProductId == id);
         if (product == null) return NotFound("Category Not Found");
 
-        _uof.ProductRepository.Delete(product);
+        var deletedProduct = _uof.ProductRepository.Delete(product);
         _uof.Commit();
-        return Ok(product);
+
+        var deletedProductDto = _mapper.Map<ProductDTO>(deletedProduct);
+        return Ok(deletedProductDto);
 
 
 
