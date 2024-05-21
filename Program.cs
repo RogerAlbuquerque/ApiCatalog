@@ -45,7 +45,7 @@ builder.Services.AddScoped<ApiLoggingFilter>();
 //CORS----------
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: "originWithAllowedAccess", policy => { policy.WithOrigins("http://localhost"); });
+    options.AddPolicy(name: "originWithAllowedAccess", policy => { policy.WithOrigins("http://localhost").AllowAnyMethod().AllowAnyHeader(); });
 });
 
 var app = builder.Build();
