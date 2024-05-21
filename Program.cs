@@ -20,20 +20,20 @@ builder.Services.AddSwaggerGen();
 string mySqlConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(mySqlConnection, ServerVersion.AutoDetect(mySqlConnection)));
 
+var KeyOfAppSetting = builder.Configuration["key1"];
+
 //JWT AUTHENTICATION
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication("Bearer").AddJwtBearer();
-
-var KeyOfAppSetting = builder.Configuration["key1"];
+//
 builder.Services.AddTransient<IMyService, MyService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddAutoMapper(typeof(ProductDTOMappingProfile));
-
-
 builder.Services.AddScoped<ApiLoggingFilter>();
+
 //Used to disable FromService parameters on actions
 //
 //builder.Services.Configure<ApiBehaviorOptions>(options =>
@@ -41,6 +41,12 @@ builder.Services.AddScoped<ApiLoggingFilter>();
 //        options.DisableImplicitFromServicesParameters = true;
 //    }
 //);
+
+//CORS----------
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "originWithAllowedAccess", policy => { policy.WithOrigins("http://localhost"); });
+});
 
 var app = builder.Build();
 
@@ -53,7 +59,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors("originWithAllowedAccess");
 app.UseAuthorization();
 
 app.MapControllers();
