@@ -1,10 +1,9 @@
-﻿using ApiCatalog.Context;
-using ApiCatalog.Filters;
-using ApiCatalog.Models;
+﻿using ApiCatalog.Filters;
 using Microsoft.AspNetCore.Mvc;
 using ApiCatalog.Repositories.Interfaces;
 using ApiCatalog.DTOs;
 using ApiCatalog.DTOs.Mappinggs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ApiCatalog.Controllers;
 
@@ -41,6 +40,7 @@ public class CategoriesController(IUnitOfWork uof, ILogger<CategoriesController>
 
    
     [HttpGet("{id:int}", Name = "GetCategory")]
+    [Authorize]
     public ActionResult<CategoryDTO> Get(int id)
     {
         var category = _uof.CategoryRepository.GetById(c => c.CategoryId == id);

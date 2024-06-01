@@ -1,12 +1,9 @@
-﻿using ApiCatalog.Context;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ApiCatalog.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ApiCatalog.Services;
 using ApiCatalog.Repositories.Interfaces;
-using ApiCatalog.Pagination;
 using ApiCatalog.DTOs;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using AutoMapper;
 
 namespace ApiCatalog.Controllers;
