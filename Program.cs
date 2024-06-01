@@ -23,8 +23,7 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(mySqlCon
 var KeyOfAppSetting = builder.Configuration["key1"];
 
 //JWT AUTHENTICATION
-builder.Services.AddAuthorization();
-builder.Services.AddAuthentication("Bearer").AddJwtBearer();
+
 //
 builder.Services.AddTransient<IMyService, MyService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
