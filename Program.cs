@@ -5,6 +5,7 @@ using ApiCatalog.Filters;
 using ApiCatalog.Repositories;
 using ApiCatalog.Repositories.Interfaces;
 using ApiCatalog.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
@@ -33,6 +34,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddAutoMapper(typeof(ProductDTOMappingProfile));
 builder.Services.AddScoped<ApiLoggingFilter>();
+//builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>().AddDfaultTokenProviders();
 
 //Used to disable FromService parameters on actions
 //
