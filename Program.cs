@@ -2,6 +2,7 @@ using ApiCatalog.Context;
 using ApiCatalog.DTOs.Mappings;
 using ApiCatalog.Extensions;
 using ApiCatalog.Filters;
+using ApiCatalog.Models;
 using ApiCatalog.Repositories;
 using ApiCatalog.Repositories.Interfaces;
 using ApiCatalog.Services;
@@ -61,7 +62,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddAutoMapper(typeof(ProductDTOMappingProfile));
 builder.Services.AddScoped<ApiLoggingFilter>();
-builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+builder.Services.AddIdentity<ApplicationsUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 
 //Used to disable FromService parameters on actions
 //
