@@ -5,8 +5,11 @@ using ApiCatalog.Filters;
 using ApiCatalog.Repositories;
 using ApiCatalog.Repositories.Interfaces;
 using ApiCatalog.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,6 +29,30 @@ var KeyOfAppSetting = builder.Configuration["key1"];
 //JWT AUTHENTICATION
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication("Bearer").AddJwtBearer();
+
+var secretKey = builder.Configuration["JWT:SecretKey"] ?? throw new ArgumentException("Invalidade secret key!!");
+
+builder.Services.AddAuthentication(options =>
+{
+    
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme; // this configured this method to default Authentication method used in this applicatoins
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; //if someone try to access protected endpont without token, applications will ask for token
+}).AddJwtBearer(options =>  //Especify configuration of bearer scheme authentication
+{
+    options.SaveToken = true;
+    options.RequireHttpsMetadata = false;
+    options.TokenValidationParameters = new TokenValidationParameters() // here is parameter used to validate token
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ClockSkew = TimeSpan.Zero,
+        ValidAudience = builder.Configuration["JWT:ValidAudience"],
+        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+    };
+});
 //
 builder.Services.AddTransient<IMyService, MyService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
