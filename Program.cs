@@ -29,7 +29,7 @@ var KeyOfAppSetting = builder.Configuration["key1"];
 
 //JWT AUTHENTICATION
 builder.Services.AddAuthorization();
-builder.Services.AddAuthentication("Bearer").AddJwtBearer();
+//builder.Services.AddAuthentication("Bearer").AddJwtBearer();
 
 var secretKey = builder.Configuration["JWT:SecretKey"] ?? throw new ArgumentException("Invalidade secret key!!");
 
@@ -63,6 +63,8 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddAutoMapper(typeof(ProductDTOMappingProfile));
 builder.Services.AddScoped<ApiLoggingFilter>();
 builder.Services.AddIdentity<ApplicationsUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+builder.Services.AddScoped<ITokenService, TokenService>();
+
 
 //Used to disable FromService parameters on actions
 //
