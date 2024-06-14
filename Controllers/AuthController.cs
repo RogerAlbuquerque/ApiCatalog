@@ -3,21 +3,23 @@ using ApiCatalog.Models;
 using ApiCatalog.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+
 
 namespace ApiCatalog.Controllers;
 
 public class AuthController
     (
         ITokenService tokenService,
-        UserManager<ApplicationsUser> userManager,
+        UserManager<ApplicationUser> userManager,
         RoleManager<IdentityRole> roleManager,
         IConfiguration configuration
     ) : ControllerBase
 {
     private readonly ITokenService _tokenService = tokenService;
-    private readonly UserManager<ApplicationsUser> _userManager = userManager;
+    private readonly UserManager<ApplicationUser> _userManager = userManager;
     private readonly RoleManager<IdentityRole> _roleManager = roleManager;
     private readonly IConfiguration _configuration = configuration;
 
@@ -27,7 +29,8 @@ public class AuthController
 
     [HttpPost]
     [Route("login")]
-    public async Task<IActionResult> Login([FromBody] LoginModel model)
+    public async Task<IActionResult> Login([FromBody] LoginModel
+    model)
     {
         var user = await _userManager.FindByNameAsync(model.Username);
         if (user is not null && await _userManager.CheckPasswordAsync(user, model.Password))
@@ -69,4 +72,41 @@ public class AuthController
 
         return Unauthorized();
     }
+
+
+
+    [HttpPost]
+    [Route("register")]
+    public async Task<IActionResult> Result([FromBody] RegisterModel model)
+    {
+        var userExist = await _userManager.FindByNameAsync(model.Username);
+
+        if (userExist == null)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User alredy exists!" });
+        }
+
+        ApplicationUser user = new()
+        {
+            Email = model.Email,
+            SecurityStamp = Guid.NewGuid().ToString(),
+            UserName = model.Username,
+        };
+
+        var result = await _userManager.CreateAsync(user, model.Password);
+
+        if (!result.Succeeded)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed!" });
+        }
+
+        return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+    }
+
+
+
+
+
+
+
 }

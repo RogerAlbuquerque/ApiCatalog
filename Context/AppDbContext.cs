@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ApiCatalog.Context;
 
-public class AppDbContext(DbContextOptions<AppDbContext> options):IdentityDbContext<ApplicationsUser>(options)
+public class AppDbContext(DbContextOptions<AppDbContext> options):IdentityDbContext<ApplicationUser>(options)
 {
     //public AppDbContext(DbContextOptions<AppDbContext> options): base(options) 
     //{ }
