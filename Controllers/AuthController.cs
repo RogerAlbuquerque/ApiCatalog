@@ -1,6 +1,8 @@
 ﻿using ApiCatalog.DTOs;
 using ApiCatalog.Models;
 using ApiCatalog.Services;
+using Microsoft.AspNetCore.Authentication.BearerToken;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -89,11 +91,11 @@ public class AuthController
         ApplicationUser user = new()
         {
             Email = model.Email,
-            SecurityStamp = Guid.NewGuid().ToString(),
+            SecurityStamp = Guid.NewGuid().ToString(),  // To save in security stamp
             UserName = model.Username,
         };
 
-        var result = await _userManager.CreateAsync(user, model.Password);
+        var result = await _userManager.CreateAsync(user, model.Password);  // This is a internal method, i do not created this
 
         if (!result.Succeeded)
         {
@@ -105,8 +107,62 @@ public class AuthController
 
 
 
+    [HttpPost]
+    [Route("refresh-token")]
+    public async Task<IActionResult> RefreshToken([FromBody] TokenModel tokenModel)
+    {
+        if (tokenModel is null)
+        {
+            return BadRequest("Invalid client request");
+        }
 
+        string accessToken = tokenModel.AccessToken ?? throw new ArgumentNullException(nameof(tokenModel));
 
+        string refreshToken = tokenModel.RefreshToken ?? throw new ArgumentNullException(nameof (tokenModel));
 
+        var principal = _tokenService.GetPrincipalFromExpiredToken(accessToken, _configuration);
 
+        if(principal == null)
+        {
+            return BadRequest("Invalid access token/refreshToken");
+        }
+
+        string username = principal.Identity.Name;
+
+        var user = await _userManager.FindByNameAsync(username);
+
+        if (user == null|| user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+        {
+            return BadRequest("Invalid access token/refresh token");
+        }
+
+        var newAccessToken = _tokenService.GenerateAccessToken(principal.Claims.ToList(), _configuration);
+
+        var newRefreshToken = _tokenService.GenerateRefreshToken();
+
+        user.RefreshToken = newRefreshToken;
+        await _userManager.UpdateAsync(user);
+
+        return new ObjectResult( new
+        {
+            accessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
+            refreshToken = newRefreshToken
+        });
+
+    }
+    [Authorize]
+    [HttpPost]
+    [Route("revoke/{username}")]
+    public async Task<IActionResult> Revoke(string username)
+    {
+        var user = await _userManager.FindByNameAsync(username);
+
+        if (user == null)  return BadRequest("Invalid username");
+
+        user.RefreshToken = null;
+
+        await _userManager.UpdateAsync(user);
+
+        return NoContent();
+    }
 }
