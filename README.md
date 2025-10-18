@@ -1,6 +1,6 @@
 # ApiCatalog
 
-Uma **API RESTful** para gerenciamento de catálogo de produtos e categorias. Este projeto permite que clientes realizem operações CRUD em produtos e categorias, com suporte a autenticação, paginação e arquitetura limpa.
+Uma **API RESTful** para gerenciamento de catálogo de produtos e categorias. Este projeto permite que clientes realizem operações CRUD em produtos com base em suas organizações de categorias, além de ter suporte a autenticação, paginação e arquitetura limpa.
 
 ## Funcionalidades
 
@@ -14,16 +14,16 @@ Uma **API RESTful** para gerenciamento de catálogo de produtos e categorias. Es
   
 - Estrutura baseada em **Repository Pattern** e **Unit of Work**, com **DTOs**
   
-- Implementação em **MVC** e versão seguindo **Clean Architecture**
+- Implementação de duas versões uma em **MVC** e outra seguindo **Clean Architecture**
   
 - Testes unitários com **xUnit**
   
 
 ## Tecnologias Utilizadas
 
-- **ASP.NET Core**
+- **ASP.NET Core 8 e 9**
   
-- **Entity Framework Core 8 e 9**
+- **Entity Framework Core**
   
 - **MySQL** (compatível com SQL Server)
   
