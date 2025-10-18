@@ -16,8 +16,6 @@ Uma **API RESTful** para gerenciamento de catálogo de produtos e categorias. Es
   
 - Implementação de duas versões uma em **MVC** e outra seguindo **Clean Architecture**
   
-- Testes unitários com **xUnit**
-  
 
 ## Tecnologias Utilizadas
 
@@ -32,8 +30,6 @@ Uma **API RESTful** para gerenciamento de catálogo de produtos e categorias. Es
 - **Swagger** para documentação da API
   
 - **Programação assíncrona** (async/await)
-  
-- Testes unitários com **xUnit**
   
 
 ## Estrutura do Projeto
@@ -87,14 +83,6 @@ dotnet run
 
 ```
 http://localhost:5000/swagger
-```
-
-## Testes
-
-Execute os testes unitários com:
-
-```bash
-dotnet test
 ```
 
 ## Observações
