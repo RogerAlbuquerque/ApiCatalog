@@ -1,4 +1,4 @@
-ApiCatalog
+# ApiCatalog
 
 A **RESTful API** for managing a product and category catalog. This project allows clients to perform CRUD operations on products based on their category organizations, and includes support for authentication, pagination, and clean architecture.
 
