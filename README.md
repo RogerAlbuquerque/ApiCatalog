@@ -1,65 +1,65 @@
-# ApiCatalog
+ApiCatalog
 
-Uma **API RESTful** para gerenciamento de catálogo de produtos e categorias. Este projeto permite que clientes realizem operações CRUD em produtos com base em suas organizações de categorias, além de ter suporte a autenticação, paginação e arquitetura limpa.
+A **RESTful API** for managing a product and category catalog. This project allows clients to perform CRUD operations on products based on their category organizations, and includes support for authentication, pagination, and clean architecture.
 
-## Funcionalidades
+## Features
 
-- CRUD completo de **Produtos** e **Categorias**
+- Full CRUD for **Products** and **Categories**
   
-- Paginação de resultados
+- Result pagination
   
-- Autenticação via **JWT**
+- Authentication using **JWT**
   
-- Configuração de **CORS**
+- **CORS** configuration
   
-- Estrutura baseada em **Repository Pattern** e **Unit of Work**, com **DTOs**
+- Structure based on **Repository Pattern** and **Unit of Work**, using **DTOs**
   
-- Implementação de duas versões uma em **MVC** e outra seguindo **Clean Architecture**
+- Two implementations: one using **MVC** and another following **Clean Architecture**
   
 
-## Tecnologias Utilizadas
+## Technologies Used
 
-- **ASP.NET Core 8 e 9**
+- **ASP.NET Core 8 and 9**
   
 - **Entity Framework Core**
   
-- **MySQL** (compatível com SQL Server)
+- **MySQL** (compatible with SQL Server)
   
 - **AutoMapper**
   
-- **Swagger** para documentação da API
+- **Swagger** for API documentation
   
-- **Programação assíncrona** (async/await)
-  
-
-## Estrutura do Projeto
-
-O projeto possui duas abordagens principais:
-
-1. **Modelo MVC tradicional**
-  
-2. **Modelo Clean Architecture**, separando camadas de domínio, aplicação, infraestrutura e API
+- **Asynchronous programming** (async/await)
   
 
-## Requisitos
+## Project Structure
 
-- [.NET 8 ou 9 SDK](https://dotnet.microsoft.com/en-us/download)
+The project includes two main approaches:
+
+1. **Traditional MVC model**
   
-- MySQL ou SQL Server
+2. **Clean Architecture model**, separating domain, application, infrastructure, and API layers
+  
+
+## Requirements
+
+- [.NET 8 or 9 SDK](https://dotnet.microsoft.com/en-us/download)
+  
+- MySQL or SQL Server
   
 - Visual Studio / VS Code / JetBrains Rider
   
 
-## Como Rodar
+## How to Run
 
-1. Clone o repositório:
+1. Clone the repository:
 
 ```bash
 git clone https://github.com/seu-usuario/apicatalog.git
 cd apicatalog
 ```
 
-2. Configure a **string de conexão** no `appsettings.json`:
+2. Configure the **connection string** in `appsettings.json`:
 
 ```json
 "ConnectionStrings": {
@@ -67,28 +67,16 @@ cd apicatalog
 }
 ```
 
-3. Atualize o banco de dados:
+3. Update the database:
 
 ```bash
 dotnet ef database update
 ```
 
-4. Execute a aplicação:
+4. Run the application:
 
 ```bash
 dotnet run
 ```
 
-5. Acesse a documentação via **Swagger**:
-
-```
-http://localhost:5000/swagger
-```
-
-## Observações
-
-- Suporta múltiplos bancos (MySQL e SQL Server)
-  
-- Estrutura preparada para evolução e manutenção fácil
-  
-- Código escrito com foco em **boas práticas**, **manutenibilidade** e **testabilidade**
+5. Access the documentation via **Swagger**:
